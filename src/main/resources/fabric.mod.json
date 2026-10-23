@@ -29,7 +29,13 @@
     "fabric-api": "*",
     "minecraft": "${project.minecraft_version}",
     "java": ">=${project.java_version}",
+    "polymer-core": "*",
+    "polymer-blocks": "*",
     "polymer-resource-pack": "*",
+    "polymer-resource-pack-extras": "*",
     "polymer-virtual-entity": "*"
+  },
+  "suggests": {
+    "factorytools": "*"
   }
 }
