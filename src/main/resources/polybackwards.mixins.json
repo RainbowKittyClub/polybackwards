@@ -9,6 +9,8 @@
     "DefaultRPBuilderAccessor",
     "PolymerBlockResourceUtilsMixin",
     "ServerCommonPacketListenerImplMixin",
+    "ServerLevelMixin",
+    "ServerPlayerGameModeMixin",
     "SoundHolderCodecMixin",
     "StrawBedBlockMixin",
     "VirtualDestroyStageMixin"
