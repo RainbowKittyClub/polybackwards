@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.resources.Identifier;
 
+import club.rainbowkitty.polybackwards.client.ClientVersions;
+import club.rainbowkitty.polybackwards.pack.Pre97Overlay;
+
 /** Mod entrypoint. **/
 public class Polybackwards implements ModInitializer {
     public static final String MOD_ID = "polybackwards";
@@ -18,5 +21,7 @@ public class Polybackwards implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        Pre97Overlay.register();
+        ClientVersions.register();
     }
 }
