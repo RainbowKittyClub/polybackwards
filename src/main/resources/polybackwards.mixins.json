@@ -8,6 +8,8 @@
   "mixins": [
     "DefaultRPBuilderAccessor",
     "PolymerBlockResourceUtilsMixin",
+    "ServerCommonPacketListenerImplMixin",
+    "SoundHolderCodecMixin",
     "StrawBedBlockMixin",
     "VirtualDestroyStageMixin"
   ],

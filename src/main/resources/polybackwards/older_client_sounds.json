@@ -1,0 +1,28 @@
+{
+ "//": "Sound events 26.3 added (SoundEvents diffed against 26.2), each sent to an older client holding the server pack as an event 26.1 has. ViaBackwards maps all but the poplar ambience on its own; these picks replace its picks.",
+ "sounds": {
+  "minecraft:block.straw_bed.place": {"release": "V26_3", "sound": "minecraft:block.grass.place", "why": "Straw is hay, and the hay bale sounds like grass."},
+  "minecraft:block.straw_bed.break": {"release": "V26_3", "sound": "minecraft:block.grass.break", "why": "Straw is hay, and the hay bale sounds like grass."},
+  "minecraft:block.straw_bed.break_leave": {"release": "V26_3", "sound": "minecraft:block.grass.break", "why": "The bed falling apart as its sleeper leaves is its break."},
+  "minecraft:block.straw_bed.step": {"release": "V26_3", "sound": "minecraft:block.grass.step", "why": "Straw is hay, and the hay bale sounds like grass."},
+  "minecraft:block.straw_bed.hit": {"release": "V26_3", "sound": "minecraft:block.grass.hit", "why": "Straw is hay, and the hay bale sounds like grass."},
+  "minecraft:block.straw_bed.fall": {"release": "V26_3", "sound": "minecraft:block.grass.fall", "why": "Straw is hay, and the hay bale sounds like grass."},
+  "minecraft:block.red_shrub.place": {"release": "V26_3", "sound": "minecraft:block.grass.place", "why": "A BushBlock like the vanilla bush, which sounds like grass."},
+  "minecraft:block.red_shrub.break": {"release": "V26_3", "sound": "minecraft:block.grass.break", "why": "A BushBlock like the vanilla bush, which sounds like grass."},
+  "minecraft:block.shelf_mushroom.place": {"release": "V26_3", "sound": "minecraft:block.grass.place", "why": "Mushrooms sound like grass (SoundType.GRASS), and the shelf mushroom is one."},
+  "minecraft:block.shelf_mushroom.break": {"release": "V26_3", "sound": "minecraft:block.grass.break", "why": "Mushrooms sound like grass (SoundType.GRASS), and the shelf mushroom is one."},
+  "minecraft:block.shelf_mushroom.step": {"release": "V26_3", "sound": "minecraft:block.grass.step", "why": "Mushrooms sound like grass (SoundType.GRASS), and the shelf mushroom is one."},
+  "minecraft:block.shelf_mushroom.bounce": {"release": "V26_3", "sound": "minecraft:block.slime_block.fall", "why": "It bounces entities, as the slime block does on landing; grass has no bounce."},
+  "minecraft:block.shelf_mushroom.fall": {"release": "V26_3", "sound": "minecraft:block.grass.fall", "why": "Mushrooms sound like grass (SoundType.GRASS), and the shelf mushroom is one."},
+  "minecraft:block.poplar_leaves.place": {"release": "V26_3", "sound": "minecraft:block.leaf_litter.place", "why": "26.3 plays leaf litter's own files for it."},
+  "minecraft:block.poplar_leaves.break": {"release": "V26_3", "sound": "minecraft:block.leaf_litter.break", "why": "26.3 plays leaf litter's own files for it."},
+  "minecraft:block.poplar_leaves.step": {"release": "V26_3", "sound": "minecraft:block.leaf_litter.step", "why": "26.3 plays leaf litter's own files for it."},
+  "minecraft:block.poplar_leaves.hit": {"release": "V26_3", "sound": "minecraft:block.leaf_litter.hit", "why": "26.3 plays leaf litter's own files for it."},
+  "minecraft:block.poplar_leaves.fall": {"release": "V26_3", "sound": "minecraft:block.leaf_litter.fall", "why": "26.3 plays leaf litter's own files for it."},
+  "minecraft:block.poplar_leaves.ambient": {"release": "V26_3", "sound": "minecraft:block.dry_grass.ambient", "why": "Wind in plants; clients play leaf ambience themselves, so only /playsound sends it."},
+  "minecraft:entity.cushion.place": {"release": "V26_3", "sound": "minecraft:block.wool.place", "why": "A cushion is wool."},
+  "minecraft:entity.cushion.break": {"release": "V26_3", "sound": "minecraft:block.wool.break", "why": "A cushion is wool."},
+  "minecraft:entity.cushion.sit": {"release": "V26_3", "sound": "minecraft:block.wool.fall", "why": "Settling onto wool, as landing on a wool block."},
+  "minecraft:entity.cushion.get_up": {"release": "V26_3", "sound": "minecraft:block.wool.step", "why": "A light rustle of wool, as stepping off it."}
+ }
+}

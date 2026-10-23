@@ -10,6 +10,7 @@ import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.display.DisplayFallbackOverlay;
 import club.rainbowkitty.polybackwards.display.FallbackCracks;
 import club.rainbowkitty.polybackwards.pack.Pre97Overlay;
+import club.rainbowkitty.polybackwards.sound.OlderClientSounds;
 import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 import club.rainbowkitty.polybackwards.standin.OlderClientStandIns;
 import club.rainbowkitty.polybackwards.standin.StandInCommand;
@@ -35,5 +36,6 @@ public class Polybackwards implements ModInitializer {
         // After the overlay, whose copies its crack models are made from at each pack build.
         FallbackCracks.register();
         StandInCommand.register();
+        OlderClientSounds.register();
     }
 }
