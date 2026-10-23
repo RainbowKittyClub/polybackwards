@@ -6,13 +6,16 @@
   "plugin": "club.rainbowkitty.polybackwards.mixin.OptionalMixinPlugin",
   "compatibilityLevel": "JAVA_${project.java_version}",
   "mixins": [
+    "AbstractBoatAccessor",
     "DefaultRPBuilderAccessor",
+    "MobAccessor",
     "PolymerBlockResourceUtilsMixin",
     "ServerCommonPacketListenerImplMixin",
     "ServerLevelMixin",
     "ServerPlayerGameModeMixin",
     "SoundHolderCodecMixin",
     "StrawBedBlockMixin",
+    "VehicleEntityAccessor",
     "VirtualDestroyStageMixin"
   ],
   "injectors": {

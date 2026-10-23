@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.display.DisplayFallbackOverlay;
 import club.rainbowkitty.polybackwards.display.FallbackCracks;
+import club.rainbowkitty.polybackwards.entity.OlderClientEntities;
 import club.rainbowkitty.polybackwards.item.ClientPlacement;
 import club.rainbowkitty.polybackwards.item.OlderClientItems;
 import club.rainbowkitty.polybackwards.pack.Pre97Overlay;
@@ -39,6 +40,7 @@ public class Polybackwards implements ModInitializer {
         FallbackCracks.register();
         StandInCommand.register();
         OlderClientItems.register();
+        OlderClientEntities.register();
         ClientPlacement.register();
         OlderClientSounds.register();
     }
