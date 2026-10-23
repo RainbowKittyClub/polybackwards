@@ -1,10 +1,15 @@
 {
+  "//": "The plugin skips VirtualDestroyStageMixin without FactoryTools' crack API.",
   "required": true,
   "minVersion": "0.8",
   "package": "club.rainbowkitty.polybackwards.mixin",
+  "plugin": "club.rainbowkitty.polybackwards.mixin.OptionalMixinPlugin",
   "compatibilityLevel": "JAVA_${project.java_version}",
   "mixins": [
-    "DefaultRPBuilderAccessor"
+    "DefaultRPBuilderAccessor",
+    "PolymerBlockResourceUtilsMixin",
+    "StrawBedBlockMixin",
+    "VirtualDestroyStageMixin"
   ],
   "injectors": {
     "defaultRequire": 1

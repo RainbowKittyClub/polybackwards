@@ -1,0 +1,9 @@
+// polybackwards' own build logic, applied last by the shared build.gradle.
+
+// Cracks over display-fallback blocks compile against the RKC FactoryTools fork's crack API.
+// FactoryTools comes at runtime from ppb's nested jar, so it is neither shipped nor claimed.
+dependencies {
+    compileOnly("eu.pb4:factorytools:${project.factorytools_version}") {
+        transitive = false
+    }
+}
