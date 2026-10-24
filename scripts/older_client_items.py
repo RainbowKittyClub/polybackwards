@@ -173,6 +173,9 @@ def main():
         version, item_id = release, registry[release].index(name)
         while version in down:
             item_id = down[version][item_id]
+            # -1 would index the older registry from its end and name its last item.
+            if item_id < 0:
+                sys.exit(f"{name}: ViaBackwards maps it to nothing for {older[version]}")
             version = older[version]
             substitute = registry[version][item_id]
             if substitute not in registry[NEWEST]:
