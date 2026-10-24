@@ -132,13 +132,23 @@ public final class OlderClientStandIns {
 
     /**
      * Claims every pooled stand-in from Polymer's creator; PolymerBlockResourceUtils' static
-     * initialiser calls this once, before any request.
+     * initialiser calls this once, before any request. A failure is logged and sends no stand-ins.
      */
     public static synchronized void claim(BlockResourceCreator creator) {
         if (claimed) {
             return;
         }
         claimed = true;
+        try {
+            claimFrom(creator);
+        } catch (RuntimeException e) {
+            // Thrown on, it would fail Polymer's static initialiser and every mod's block request.
+            Polybackwards.LOGGER.error("Older-client stand-ins: claims failed, none are sent", e);
+        }
+    }
+
+    // Claims the pooled stand-ins and publishes them; claim's body, which it guards.
+    private static void claimFrom(BlockResourceCreator creator) {
         StableSlots found = StableSlots.find();
         Map<BlockState, BlockState> claimedStandIns = new IdentityHashMap<>();
         Set<Block> fallback = Collections.newSetFromMap(new IdentityHashMap<>());
