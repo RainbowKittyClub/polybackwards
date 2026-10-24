@@ -11,7 +11,6 @@ import java.util.Map;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import org.jspecify.annotations.Nullable;
 
@@ -23,8 +22,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.SoundType;
 
 import club.rainbowkitty.polybackwards.Polybackwards;
-import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.client.Release;
+import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 
 /**
  * Sends a client with the server pack, in place of each sound event its release lacks, the older
@@ -55,8 +54,8 @@ public final class OlderClientSounds {
             return holder;
         }
         Entry entry = table.get(event.location());
-        if (entry == null || ClientVersions.of(context).compareTo(entry.release()) >= 0
-                || !PolymerResourcePackUtils.hasMainPack(context)) {
+        if (entry == null
+                || OlderClientMapper.standInRelease(context).compareTo(entry.release()) >= 0) {
             return holder;
         }
         return entry.replacement();

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
@@ -21,8 +20,8 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 
 import club.rainbowkitty.polybackwards.Polybackwards;
-import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.client.Release;
+import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 
 /**
  * Shows clients that predate 26.3 its new entities as something close, in place of ViaBackwards'
@@ -62,10 +61,10 @@ public final class OlderClientEntities {
                 BOATS.size());
     }
 
-    /** Whether a client is shown stand-ins: it predates these entities and holds the pack. */
+    // Whether a client is shown stand-ins: it predates these entities and holds the pack.
     static boolean drawsStandIns(@Nullable PacketContext context) {
-        return context != null && drawsStandIns(ClientVersions.of(context),
-                PolymerResourcePackUtils.hasMainPack(context));
+        return context != null
+                && OlderClientMapper.standInRelease(context).compareTo(INTRODUCED) < 0;
     }
 
     // Same, for a player's connection; false for none, which Polymer passes with tracked data.

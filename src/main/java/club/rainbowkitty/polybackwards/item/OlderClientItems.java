@@ -14,7 +14,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import org.jspecify.annotations.Nullable;
 
@@ -27,9 +26,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import club.rainbowkitty.polybackwards.Polybackwards;
-import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.client.Release;
 import club.rainbowkitty.polybackwards.pack.Pre97Overlay;
+import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 
 /**
  * Shows a client that predates a vanilla item that item's own icon. Its stacks still reach the
@@ -95,8 +94,8 @@ public final class OlderClientItems {
     public static ClientPlacement.@Nullable Choice choiceFor(Item item,
             @Nullable PacketContext context) {
         Item substitute = substitute(item, context);
-        return substitute == null ? null
-                : ClientPlacement.choose(item, substitute, ClientVersions.of(context));
+        return substitute == null ? null : ClientPlacement.choose(item, substitute,
+                OlderClientMapper.standInRelease(context));
     }
 
     /** Ids of every item in the table. */
@@ -109,9 +108,7 @@ public final class OlderClientItems {
         if (context == null || !substitutes.containsKey(item)) {
             return null;
         }
-        Item substitute = substituteFor(ClientVersions.of(context), item);
-        return substitute != null && PolymerResourcePackUtils.hasMainPack(context)
-                ? substitute : null;
+        return substituteFor(OlderClientMapper.standInRelease(context), item);
     }
 
     // Swaps the client stack's item, Polymer's or a mod's included, when the client lacks it.
