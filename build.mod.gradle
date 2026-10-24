@@ -22,7 +22,8 @@ repositories {
 }
 
 // Cracks over display-fallback blocks compile against the RKC FactoryTools fork's crack API.
-// FactoryTools comes at runtime from ppb's nested jar, so it is neither shipped nor claimed.
+// FactoryTools comes at runtime from ppb's nested jar, so it is neither shipped nor required:
+// fabric.mod.json only suggests it, which stock FactoryTools also meets without the crack API.
 dependencies {
     compileOnly("eu.pb4:factorytools:${project.factorytools_version}") {
         transitive = false
