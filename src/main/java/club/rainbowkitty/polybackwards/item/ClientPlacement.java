@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import eu.pb4.polymer.core.api.utils.PolymerSyncedObject;
@@ -27,7 +28,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.BlockItem;
@@ -42,6 +45,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.BlockHitResult;
 
 import club.rainbowkitty.polybackwards.Polybackwards;
 import club.rainbowkitty.polybackwards.client.Release;
@@ -54,7 +58,8 @@ import club.rainbowkitty.polybackwards.standin.OlderClientStandIns;
  * whose placements all show one pooled stand-in sounding like the block gets that stand-in's own
  * block item, pinned by {@code block_state}, so the client places exactly what the server sends.
  * Any other item that places something gets a firework star, which predicts nothing; the server
- * then plays its sounds and swing to that client too, which vanilla leaves to the client.
+ * then plays its sounds and swing to that client too, which vanilla leaves to the client, and drops
+ * the use packet the client sends after its star's click passes.
  */
 public final class ClientPlacement {
     // Properties the world sets after a placement, as the RKC Polymer fork's
@@ -81,10 +86,14 @@ public final class ClientPlacement {
 
     private ClientPlacement() {}
 
-    /** Adds {@code /polybackwards placement <item>}, which prints each release's choice. */
+    /**
+     * Adds {@code /polybackwards placement <item>}, which prints each release's choice, and has
+     * Polymer drop the use packet that follows a firework star's ended click.
+     */
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) ->
                 registerCommand(dispatcher));
+        PolymerBlockUtils.POLYMER_BLOCK_INTERACTION_CHECK.register(ClientPlacement::endsClick);
     }
 
     /**
@@ -151,6 +160,18 @@ public final class ClientPlacement {
                 ? PolymerItemUtils.getItemSafely(polymerItem, stack, context,
                         player.registryAccess()).item()
                 : stack.getItem();
+    }
+
+    // Whether Polymer should keep this click's result, so it drops the star's follow-up use packet.
+    private static boolean endsClick(BlockState state, ServerPlayer player, InteractionHand hand,
+            ItemStack stack, ServerLevel level, BlockHitResult hit, InteractionResult result) {
+        // A predicted success is the clicked block's own, which the client ran with its star too.
+        if (result == InteractionResult.PASS || result instanceof InteractionResult.Success success
+                && success.swingSource() == CLIENT_SWING) {
+            return false;
+        }
+        Choice choice = choiceFor(player, stack);
+        return choice != null && choice.kind() == Kind.UNPREDICTED;
     }
 
     // Pins a lone matching stand-in, else a firework star where the client would place a block.
