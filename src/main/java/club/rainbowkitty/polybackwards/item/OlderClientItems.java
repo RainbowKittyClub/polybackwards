@@ -147,10 +147,16 @@ public final class OlderClientItems {
                 JsonObject items = GsonHelper.getAsJsonObject(
                         JsonParser.parseReader(reader).getAsJsonObject(), "items");
                 for (Map.Entry<String, JsonElement> entry : items.entrySet()) {
-                    Item item = item(entry.getKey());
-                    Map<Release, Item> byRelease = substitutes(entry.getValue().getAsJsonObject());
-                    if (item != null && !byRelease.isEmpty()) {
-                        table.put(item, byRelease);
+                    try {
+                        Item item = item(entry.getKey());
+                        Map<Release, Item> byRelease =
+                                substitutes(entry.getValue().getAsJsonObject());
+                        if (item != null && !byRelease.isEmpty()) {
+                            table.put(item, byRelease);
+                        }
+                    } catch (RuntimeException e) {
+                        Polybackwards.LOGGER.warn("Older-client items: skipping {}", entry.getKey(),
+                                e);
                     }
                 }
             }

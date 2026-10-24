@@ -82,9 +82,14 @@ public final class OlderClientSounds {
                 JsonObject sounds = GsonHelper.getAsJsonObject(
                         JsonParser.parseReader(reader).getAsJsonObject(), "sounds");
                 for (Map.Entry<String, JsonElement> json : sounds.entrySet()) {
-                    Entry entry = entry(json.getKey(), json.getValue().getAsJsonObject());
-                    if (entry != null) {
-                        loaded.put(Identifier.parse(json.getKey()), entry);
+                    try {
+                        Entry entry = entry(json.getKey(), json.getValue().getAsJsonObject());
+                        if (entry != null) {
+                            loaded.put(Identifier.parse(json.getKey()), entry);
+                        }
+                    } catch (RuntimeException e) {
+                        Polybackwards.LOGGER.warn("Older-client sounds: skipping {}", json.getKey(),
+                                e);
                     }
                 }
             }

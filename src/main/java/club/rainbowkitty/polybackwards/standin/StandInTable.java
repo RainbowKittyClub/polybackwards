@@ -55,9 +55,16 @@ final class StandInTable {
                 JsonObject blocks = GsonHelper.getAsJsonObject(
                         JsonParser.parseReader(reader).getAsJsonObject(), "blocks");
                 for (Map.Entry<String, JsonElement> block : blocks.entrySet()) {
-                    Entry entry = parseEntry(block.getKey(), block.getValue().getAsJsonObject());
-                    if (entry != null) {
-                        entries.put(entry.block(), entry);
+                    // One bad entry costs its block only, not the table.
+                    try {
+                        Entry entry = parseEntry(block.getKey(),
+                                block.getValue().getAsJsonObject());
+                        if (entry != null) {
+                            entries.put(entry.block(), entry);
+                        }
+                    } catch (RuntimeException e) {
+                        Polybackwards.LOGGER.warn("Older-client stand-ins: skipping {}",
+                                block.getKey(), e);
                     }
                 }
             }
