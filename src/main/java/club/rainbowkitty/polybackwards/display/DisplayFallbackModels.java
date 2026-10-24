@@ -134,6 +134,12 @@ public final class DisplayFallbackModels {
         List<JsonObject> chain = new ArrayList<>();
         Identifier next = model.model();
         while (next != null && !next.getPath().startsWith("builtin/")) {
+            // A pack or mod model can name a parent that leads back to itself.
+            if (ids.contains(next)) {
+                Polybackwards.LOGGER.warn("Display fallback: {} has a parent loop at {}",
+                        model.model(), next);
+                return null;
+            }
             byte[] data = builder.getDataOrSource(AssetPaths.model(next) + ".json");
             if (data == null) {
                 Polybackwards.LOGGER.warn("Display fallback: no model {}", next);
