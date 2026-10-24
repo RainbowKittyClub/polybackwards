@@ -68,9 +68,9 @@ public final class OlderClientEntities {
                 PolymerResourcePackUtils.hasMainPack(context));
     }
 
-    /** Same, for a player's connection. */
-    static boolean drawsStandIns(ServerPlayer player) {
-        return player.connection != null
+    // Same, for a player's connection; false for none, which Polymer passes with tracked data.
+    static boolean drawsStandIns(@Nullable ServerPlayer player) {
+        return player != null && player.connection != null
                 && drawsStandIns(player.connection.getPacketContext());
     }
 

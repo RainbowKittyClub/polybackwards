@@ -64,7 +64,7 @@ final class PoplarBoatStandIn implements PolymerEntity {
     @Override
     public void modifyRawTrackedData(List<SynchedEntityData.DataValue<?>> data,
             ServerPlayer player, boolean initial) {
-        if (player != null && OlderClientEntities.drawsStandIns(player)) {
+        if (OlderClientEntities.drawsStandIns(player)) {
             data.removeIf(value -> ROCKING.contains(value.id()));
         }
     }
