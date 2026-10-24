@@ -11,7 +11,11 @@ import java.util.function.Supplier;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import eu.pb4.polymer.core.api.item.PolymerItem;
+import eu.pb4.polymer.core.api.item.PolymerItemUtils;
+import eu.pb4.polymer.core.api.utils.PolymerSyncedObject;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -104,8 +108,7 @@ public final class ClientPlacement {
      */
     public static InteractionResult use(ServerPlayer player, ItemStack stack,
             Supplier<InteractionResult> use) {
-        Choice choice = OlderClientItems.choiceFor(stack.getItem(),
-                player.connection == null ? null : player.connection.getPacketContext());
+        Choice choice = choiceFor(player, stack);
         if (choice == null || choice.kind() != Kind.UNPREDICTED) {
             return use.get();
         }
@@ -131,6 +134,23 @@ public final class ClientPlacement {
     /** The entity a sound leaves out: none while that entity's use runs unpredicted. */
     public static @Nullable Entity exclusion(@Nullable Entity except) {
         return except != null && except == UNPREDICTED.get() ? null : except;
+    }
+
+    // The choice for the item the player's client holds, as OlderClientItems swaps it.
+    private static @Nullable Choice choiceFor(ServerPlayer player, ItemStack stack) {
+        PacketContext context = player.connection == null ? null
+                : player.connection.getPacketContext();
+        return context == null ? null
+                : OlderClientItems.choiceFor(clientItem(player, stack, context), context);
+    }
+
+    // The item Polymer sends for the stack: a Polymer item's client item, else the stack's own.
+    private static Item clientItem(ServerPlayer player, ItemStack stack, PacketContext context) {
+        return PolymerSyncedObject.getSyncedObject(BuiltInRegistries.ITEM, stack.getItem())
+                instanceof PolymerItem polymerItem
+                ? PolymerItemUtils.getItemSafely(polymerItem, stack, context,
+                        player.registryAccess()).item()
+                : stack.getItem();
     }
 
     // Pins a lone matching stand-in, else a firework star where the client would place a block.
