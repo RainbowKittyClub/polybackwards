@@ -100,7 +100,7 @@ public final class OlderClientItems {
 
     /** Ids of every item in the table. */
     public static Iterable<Identifier> items() {
-        return substitutes.keySet().stream().map(BuiltInRegistries.ITEM::getKey)::iterator;
+        return substitutes.keySet().stream().map(BuiltInRegistries.ITEM::getKey).toList();
     }
 
     // The substitute for a client with the server pack that lacks the item; else null.
