@@ -11,9 +11,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import club.rainbowkitty.polybackwards.client.Release;
 import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
-import club.rainbowkitty.polybackwards.standin.OlderClientStandIns;
 
 /**
  * Makes an older client's player collide with the straw bed as with its lower snow stand-in, which
@@ -21,13 +19,13 @@ import club.rainbowkitty.polybackwards.standin.OlderClientStandIns;
  */
 @Mixin(StrawBedBlock.class)
 public abstract class StrawBedBlockMixin {
-    /** The stand-in's collision for a player whose client lacks the straw bed, else the bed's. */
+    /** The collision of the stand-in the player's client is sent, else the bed's. */
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
             CollisionContext context) {
         if (context instanceof EntityCollisionContext entityContext
-                && entityContext.getEntity() instanceof ServerPlayer player
-                && OlderClientMapper.standInRelease(player).compareTo(Release.V26_3) < 0) {
-            BlockState standIn = OlderClientStandIns.displayStandIn(state);
+                && entityContext.getEntity() instanceof ServerPlayer player) {
+            BlockState standIn = OlderClientMapper.standInFor(
+                    OlderClientMapper.standInRelease(player), state);
             if (standIn != null) {
                 return standIn.getCollisionShape(level, pos);
             }

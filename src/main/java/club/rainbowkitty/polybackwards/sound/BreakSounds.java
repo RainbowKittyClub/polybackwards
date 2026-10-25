@@ -1,8 +1,5 @@
 package club.rainbowkitty.polybackwards.sound;
 
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,7 +16,6 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.client.Release;
 import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 import club.rainbowkitty.polybackwards.standin.OlderClientStandIns;
@@ -47,10 +43,9 @@ public final class BreakSounds {
         }
         BlockState real = Block.stateById(packet.getData());
         Release added = OlderClientStandIns.introducedIn(real.getBlock());
-        PacketContext context = player.connection.getPacketContext();
-        Release client = ClientVersions.of(context);
-        if (real.isAir() || added == null || client.compareTo(added) >= 0
-                || !PolymerResourcePackUtils.hasMainPack(context)) {
+        // The server's own release for a client without the pack, which lacks nothing then.
+        Release client = OlderClientMapper.standInRelease(player);
+        if (real.isAir() || added == null || client.compareTo(added) >= 0) {
             return false;
         }
         BlockState standIn = OlderClientMapper.standInFor(client, real);

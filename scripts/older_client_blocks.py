@@ -91,18 +91,18 @@ def alternatives(apply):
     return [model_entry(model) for model in (apply if isinstance(apply, list) else [apply])]
 
 
-def copy_of(name, oldest):
+def copy_of(name, every_oldest):
     """The vanilla block every client has that a copy-kind block goes out as."""
     for wood, stand_in in STAND_IN_WOOD.items():
         if name.startswith(wood + "_"):
             copy = stand_in + name[len(wood):]
-            if copy not in oldest:
+            if copy not in every_oldest:
                 sys.exit(f"{copy}, the copy of {name}, is not in every older client")
             return f"minecraft:{copy}"
     sys.exit(f"no copy for {name}; extend STAND_IN_WOOD")
 
 
-def table_entry(name, release, blockstate, oldest):
+def table_entry(name, release, blockstate, every_oldest):
     """The table's entry for one block."""
     kind = kind_of(name, blockstate)
     entry = {"release": RELEASE_NAMES[release], "kind": kind}
@@ -117,14 +117,17 @@ def table_entry(name, release, blockstate, oldest):
         double = entry["variants"]["type=double"][0]["model"]
         entry["full"] = double.replace("block/", "", 1)
     if kind == "copy":
-        entry["copy"] = copy_of(name, oldest)
+        entry["copy"] = copy_of(name, every_oldest)
     return entry
 
 
 def main():
     cache = pathlib.Path(sys.argv[1] if len(sys.argv) > 1
                          else pathlib.Path.home() / ".gradle/caches/fabric-loom")
-    oldest = set().union(*(blockstate_names(cache / v / "minecraft-client.jar") for v in OLDEST))
+    oldest_jars = [blockstate_names(cache / v / "minecraft-client.jar") for v in OLDEST]
+    oldest = set().union(*oldest_jars)
+    # A copy goes out to every 26.1.x client, so it must be in each of their jars.
+    every_oldest = set.intersection(*oldest_jars)
     previous = blockstate_names(cache / PREVIOUS / "minecraft-client.jar")
     newest_jar = cache / NEWEST / "minecraft-client.jar"
     added = {name: PREVIOUS for name in previous - oldest}
@@ -133,7 +136,8 @@ def main():
     with zipfile.ZipFile(newest_jar) as archive:
         for name in sorted(added):
             blockstate = json.loads(archive.read(f"{BLOCKSTATES}{name}.json"))
-            blocks[f"minecraft:{name}"] = table_entry(name, added[name], blockstate, oldest)
+            blocks[f"minecraft:{name}"] = table_entry(name, added[name], blockstate,
+                                                      every_oldest)
     # One block per line keeps the file small and its diffs readable.
     lines = [f" {json.dumps(name)}: {json.dumps(entry, sort_keys=True, separators=(',', ':'))}"
              for name, entry in blocks.items()]

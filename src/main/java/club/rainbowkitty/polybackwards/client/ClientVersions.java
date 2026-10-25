@@ -116,7 +116,10 @@ public final class ClientVersions {
 
     // Keeps a reported protocol on the connection; a later report replaces an earlier one.
     private static void record(PacketContext context, int protocol, Source source) {
-        context.set(SEEN, new Seen(protocol, source, releaseOf(protocol)));
+        // The proxy's report arrives on the network thread, Via's answer on the server's.
+        synchronized (context) {
+            context.set(SEEN, new Seen(protocol, source, releaseOf(protocol)));
+        }
         Polybackwards.LOGGER.debug("Client protocol {} from {}", protocol, source);
     }
 
@@ -127,8 +130,14 @@ public final class ClientVersions {
         }
         // Polymer asks Via by profile id; Via answers -1 for a connection it does not track.
         int protocol = PolymerCommonUtils.getPlayerGameProtocol(profile);
-        if (protocol > 0) {
-            record(context, protocol, Source.VIA);
+        if (protocol <= 0) {
+            return;
+        }
+        // Checked again under the lock, so a report that landed meanwhile is not overwritten.
+        synchronized (context) {
+            if (context.get(SEEN) == null) {
+                record(context, protocol, Source.VIA);
+            }
         }
     }
 

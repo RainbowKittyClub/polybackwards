@@ -218,7 +218,8 @@ public final class StandInCommand {
         return Stream.concat(OlderClientStandIns.standIns().keySet().stream(),
                         OlderClientStandIns.displayStandIns().keySet().stream())
                 .map(state -> BuiltInRegistries.BLOCK.getKey(state.getBlock()))
-                .distinct()::iterator;
+                .distinct()
+                .toList();
     }
 
     // Sends one line of feedback to the source only.

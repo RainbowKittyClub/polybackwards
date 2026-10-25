@@ -32,10 +32,12 @@ for version in "${OLDER[@]:1}"; do
     mv "$work/next" "$work/common"
 done
 
+# Built aside and moved in, so a missing 26.3 jar leaves the shipped list as it was.
 {
     echo "# Vanilla assets $NEWEST has that a ${OLDER[*]} client lacks, as paths under"
     echo "# assets/minecraft/. Pre97Overlay ships each one the pack reaches. Regenerate with"
     echo "# scripts/pre97-assets.sh."
     assets "$NEWEST" | LC_ALL=C comm -23 - "$work/common"
-} > "$OUT"
+} > "$work/out"
+mv "$work/out" "$OUT"
 echo "$(grep -vc '^#' "$OUT") entries in $OUT"

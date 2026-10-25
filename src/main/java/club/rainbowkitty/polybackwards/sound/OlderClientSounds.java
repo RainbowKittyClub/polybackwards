@@ -7,11 +7,11 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import org.jspecify.annotations.Nullable;
 
@@ -23,8 +23,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.SoundType;
 
 import club.rainbowkitty.polybackwards.Polybackwards;
-import club.rainbowkitty.polybackwards.client.ClientVersions;
 import club.rainbowkitty.polybackwards.client.Release;
+import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 
 /**
  * Sends a client with the server pack, in place of each sound event its release lacks, the older
@@ -55,8 +55,8 @@ public final class OlderClientSounds {
             return holder;
         }
         Entry entry = table.get(event.location());
-        if (entry == null || ClientVersions.of(context).compareTo(entry.release()) >= 0
-                || !PolymerResourcePackUtils.hasMainPack(context)) {
+        if (entry == null
+                || OlderClientMapper.standInRelease(context).compareTo(entry.release()) >= 0) {
             return holder;
         }
         return entry.replacement();
@@ -82,18 +82,25 @@ public final class OlderClientSounds {
                 JsonObject sounds = GsonHelper.getAsJsonObject(
                         JsonParser.parseReader(reader).getAsJsonObject(), "sounds");
                 for (Map.Entry<String, JsonElement> json : sounds.entrySet()) {
-                    Entry entry = entry(json.getKey(), json.getValue().getAsJsonObject());
-                    if (entry != null) {
-                        loaded.put(Identifier.parse(json.getKey()), entry);
+                    try {
+                        Entry entry = entry(json.getKey(), json.getValue().getAsJsonObject());
+                        if (entry != null) {
+                            loaded.put(Identifier.parse(json.getKey()), entry);
+                        }
+                    } catch (RuntimeException e) {
+                        Polybackwards.LOGGER.warn("Older-client sounds: skipping {}", json.getKey(),
+                                e);
                     }
                 }
             }
         } catch (IOException | RuntimeException e) {
             Polybackwards.LOGGER.error("Older-client sounds: cannot read {}", PATH, e);
         }
-        // A replacement that is itself new would reach the client as nothing.
+        // A replacement that is itself new would reach the client as nothing. Checked against a
+        // snapshot of the ids, as removeIf shrinks the map it runs over.
+        Set<Identifier> mappedIds = Set.copyOf(loaded.keySet());
         loaded.values().removeIf(entry -> {
-            boolean chained = loaded.containsKey(entry.replacement().value().location());
+            boolean chained = mappedIds.contains(entry.replacement().value().location());
             if (chained) {
                 Polybackwards.LOGGER.warn("Older-client sounds: {} is mapped itself",
                         entry.replacement().value().location());
