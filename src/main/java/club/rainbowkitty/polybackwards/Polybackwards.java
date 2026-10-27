@@ -13,6 +13,7 @@ import club.rainbowkitty.polybackwards.entity.OlderClientEntities;
 import club.rainbowkitty.polybackwards.item.ClientPlacement;
 import club.rainbowkitty.polybackwards.item.OlderClientItems;
 import club.rainbowkitty.polybackwards.pack.Pre97Overlay;
+import club.rainbowkitty.polybackwards.pack.Pre97TrimAtlases;
 import club.rainbowkitty.polybackwards.sound.OlderClientSounds;
 import club.rainbowkitty.polybackwards.standin.OlderClientMapper;
 import club.rainbowkitty.polybackwards.standin.OlderClientStandIns;
@@ -31,6 +32,7 @@ public class Polybackwards implements ModInitializer {
     @Override
     public void onInitialize() {
         Pre97Overlay.register();
+        Pre97TrimAtlases.register();
         ClientVersions.register();
         // Claims happen as Polymer's creator is built; this builds it when no mod has.
         OlderClientStandIns.init();
